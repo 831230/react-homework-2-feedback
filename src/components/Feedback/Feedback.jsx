@@ -6,109 +6,98 @@ class Feedback extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      statsGoodValue: props.initialValueGood,
-      statsNeutralValue: props.initialValueNeutral,
-      statsBadValue: props.initialValueBad,
-      totalStats: props.initialTotalStats,
-      positiveFeedback: props.initialPositiveFeedback,
-    }
-  };
+      good: props.initialGood,
+      neutral: props.initialNeutral,
+      bad: props.initialBad,
+    };
+  }
 
   static defaultProps = {
     step: 1,
-    initialValueGood: 0,
-    initialValueNeutral: 0,
-    initialValueBad: 0,
-    initialTotalStats: 0,
-    initialPositiveFeedback: 0,
+    initialGood: 0,
+    initialNeutral: 0,
+    initialBad: 0,
   };
 
   static propTypes = {
     title: PropTypes.string,
     step: PropTypes.number,
-    initialValueGood: PropTypes.number,
-    initialValueNeutral: PropTypes.number,
-    initialValueBad: PropTypes.number,
+    initialGood: PropTypes.number,
+    initialNeutral: PropTypes.number,
+    initialBad: PropTypes.number,
   };
 
-  handlingStatistics = (event) => {
-    // console.log(event);
-    if(event.target.outerText==="Good"){
-      console.log("Good");
+  handlingStatistics = event => {
+    if (event.target.outerText === 'Good') {
       this.goodIncrement();
-    };
-    if(event.target.outerText==="Neutral"){
-      console.log("Neutral");
+    }
+    if (event.target.outerText === 'Neutral') {
       this.neutralIncrement();
-    };
-    if(event.target.outerText==="Bad"){
-      console.log("Bad");
+    }
+    if (event.target.outerText === 'Bad') {
       this.badIncrement();
-    };
-    if(event.target.nodeName==="BUTTON"){
-      this.countTotalFeedback();
-      this.countPositiveFeedbackPercentage();
-    };
+    }
   };
 
   goodIncrement = () => {
-    this.setState((prevState)=>{
+    this.setState(prevState => {
       return {
-        statsGoodValue: prevState.statsGoodValue+this.props.step,
-      }
-    })
+        good: prevState.good + this.props.step,
+      };
+    });
   };
 
   neutralIncrement = () => {
-    this.setState((prevState)=>{
+    this.setState(prevState => {
       return {
-        statsNeutralValue: prevState.statsNeutralValue+this.props.step,
-      }
-    })
+        neutral: prevState.neutral + this.props.step,
+      };
+    });
   };
 
   badIncrement = () => {
-    this.setState((prevState)=>{
+    this.setState(prevState => {
       return {
-        statsBadValue: prevState.statsBadValue+this.props.step
-      }
-    })
+        bad: prevState.bad + this.props.step,
+      };
+    });
   };
 
   countTotalFeedback = () => {
-    console.log(this.state.statsGoodValue+this.state.statsNeutralValue+this.state.statsBadValue+1)
-    this.setState((prevState)=>{
-      return {
-        totalStats: prevState.totalStats + 1,
-      }
-    })
-  };
-
-  countPositiveFeedbackPercentage = () => {
-    console.log("I am here - countPositiveFeedbackPercentage");
-    console.log("positive feedback: ", this.state.positiveFeedback);
-    console.log("good stats: ", this.state.statsGoodValue);
-    this.setState(()=>{
-      return {
-        positiveFeedback: (this.state.statsGoodValue+1)/(this.state.totalStats+1)*100
-      }
-    })
+    if (this.state.good || this.state.neutral || this.state.bad) {
+      return (
+        <StatsResult
+          totalValue={this.state.good + this.state.neutral + this.state.bad}
+          positiveValue={Math.round(
+            (this.state.good /
+              (this.state.good + this.state.neutral + this.state.bad)) * 100
+          )}
+        />
+      );
+    } else {
+      return (
+        <StatsResult
+          totalValue={this.state.good + this.state.neutral + this.state.bad}
+          positiveValue={0}
+        />
+      );
+    }
   };
 
   render() {
     return (
       <section>
         <div onClick={this.handlingStatistics}>
-          <button >Good</button>
-          <button >Neutral</button>
-          <button >Bad</button>
+          <button>Good</button>
+          <button>Neutral</button>
+          <button>Bad</button>
         </div>
         <h3>{this.props.title}</h3>
         <div>
-          <p>Good&#58; {this.state.statsGoodValue}</p>
-          <p>Neutral&#58; {this.state.statsNeutralValue}</p>
-          <p>Bad&#58; {this.state.statsBadValue}</p>
-          <StatsResult totalValue={this.state.totalStats} positiveValue={this.state.positiveFeedback}/>
+          <p>Good&#58; {this.state.good}</p>
+          <p>Neutral&#58; {this.state.neutral}</p>
+          <p>Bad&#58; {this.state.bad}</p>
+          {this.countTotalFeedback()}
         </div>
       </section>
     );
