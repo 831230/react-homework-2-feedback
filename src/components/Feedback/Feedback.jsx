@@ -28,6 +28,7 @@ class Feedback extends Component {
   };
 
   handlingStatistics = event => {
+    // event.button("Good").onClick();
     if (event.target.outerText === 'Good') {
       this.goodIncrement();
     }
@@ -67,11 +68,16 @@ class Feedback extends Component {
     if (this.state.good || this.state.neutral || this.state.bad) {
       return (
         <StatsResult
+          good={this.state.good}
+          neutral={this.state.neutral}
+          bad={this.state.bad}
           totalValue={this.state.good + this.state.neutral + this.state.bad}
           positiveValue={Math.round(
             (this.state.good /
-              (this.state.good + this.state.neutral + this.state.bad)) * 100
+              (this.state.good + this.state.neutral + this.state.bad)) *
+              100
           )}
+          title={'Statistics'}
         />
       );
     } else {
@@ -79,6 +85,7 @@ class Feedback extends Component {
         <StatsResult
           totalValue={this.state.good + this.state.neutral + this.state.bad}
           positiveValue={0}
+          title={'Statistics'}
         />
       );
     }
@@ -86,20 +93,14 @@ class Feedback extends Component {
 
   render() {
     return (
-      <section>
+      <>
         <div onClick={this.handlingStatistics}>
-          <button>Good</button>
+          <button id="Good">Good</button>
           <button>Neutral</button>
           <button>Bad</button>
         </div>
-        <h3>{this.props.title}</h3>
-        <div>
-          <p>Good&#58; {this.state.good}</p>
-          <p>Neutral&#58; {this.state.neutral}</p>
-          <p>Bad&#58; {this.state.bad}</p>
-          {this.countTotalFeedback()}
-        </div>
-      </section>
+        {/* <div>{this.countTotalFeedback()}</div> */}
+      </>
     );
   }
 }
